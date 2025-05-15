@@ -259,26 +259,16 @@ endipresult() {
 
 	clear
 	cat result.csv | awk -F, '$3!="timeout ms" {print} ' | sort -t, -nk2 -nk3 | uniq | head -11 | awk -F, '{print "Endpoint "$1" Packet Loss Rate "$2" Average Delay "$3}'
-	Endip_v4=$(cat result.csv | grep -oE "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+" | head -n 1)
-	Endip_v6=$(cat result.csv | grep -oE "\[.*\]:[0-9]+" | head -n 1)
+	Endip_v4=$(cat result.csv | grep -oE "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+" | head -n 10)
+	Endip_v6=$(cat result.csv | grep -oE "\[.*\]:[0-9]+" | head -n 10)
 	delay=$(cat result.csv | grep -oE "[0-9]+ ms|timeout" | head -n 1)
 	echo ""
 	echo -e "${green}Results Saved in result.csv${rest}"
 	echo ""
 	if [ "$Endip_v4" ]; then
-		echo -e "${purple}************************************${rest}"
-		echo -e "${purple}*           ${yellow}Best IPv4:Port${purple}         *${rest}"
-		echo -e "${purple}*                                  *${rest}"
-		echo -e "${purple}*          ${cyan}$Endip_v4${purple}     *${rest}"
-		echo -e "${purple}*           ${cyan}Delay: ${green}[$delay]        ${purple}*${rest}"
-		echo -e "${purple}************************************${rest}"
+		echo -e "$Endip_v4"
 	elif [ "$Endip_v6" ]; then
-		echo -e "${purple}********************************************${rest}"
-		echo -e "${purple}*          ${yellow}Best [IPv6]:Port                ${purple}*${rest}"
-		echo -e "${purple}*                                          *${rest}"
-		echo -e "${purple}* ${cyan}$Endip_v6${purple} *${rest}"
-		echo -e "${purple}*           ${cyan}Delay: ${green}[$delay]               ${purple}*${rest}"
-		echo -e "${purple}********************************************${rest}"
+		echo -e "$Endip_v6"
 	else
 		echo -e "${red} No valid IP addresses found.${rest}"
 	fi
